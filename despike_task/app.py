@@ -221,8 +221,8 @@ def update_table(prev_clicks, next_clicks, current_page, stored_total_pages, das
             # Process the Excel data
             df = process_excel_data(file_path)
             
-            # Paginate the DataFrame (show 20 rows per page)
-            page_size = 20
+            # Paginate the DataFrame (show 10 rows per page)
+            page_size = 10
             total_pages = max((len(df) + page_size - 1) // page_size, 1)
             
             # Identify which button was clicked
