@@ -284,7 +284,7 @@ The sequence diagram below illustrates the data flow when a user uploads and pro
 
 1. **Clone the repository or download the source code**
    ```bash
-   git clone https://github.com/your-username/despike.git
+   git clone https://github.com/iljo15/despike-webapp.git
    cd despike
    ```
 
