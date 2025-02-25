@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despike - Data Visualization</title>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Plotly library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --primary-dark: #303f9f;
+            --secondary-color: #ff4081;
+            --text-color: #333;
+            --light-bg: #f5f7fa;
+            --card-bg: #fff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-links .active {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .page-title {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Upload Form */
+        .upload-form {
+            text-align: center;
+        }
+
+        .file-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .file-input-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-input {
+            max-width: 100%;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        /* Dashboard iframe */
+        .iframe-container {
+            width: 100%;
+            min-height: 600px;
+            border: none;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        /* Graph containers */
+        .graph-container {
+            margin-bottom: 2rem;
+        }
+
+        /* Download section */
+        .download-section {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .download-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control {
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 80px;
+        }
+
+        .download-btn {
+            background-color: var(--secondary-color);
+        }
+
+        .download-btn:hover {
+            background-color: #e91e63;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .download-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-group {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .nav-links a {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header with navigation -->
+    <header>
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fas fa-chart-line"></i> Despike
+            </a>
+            <nav class="nav-links">
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('dashboard') }}?keep_data=1" class="active">App</a>
+                <a href="{{ url_for('contact') }}">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <div class="main-container">
+        <h1 class="page-title">Interactive Data Visualization</h1>
+
+        <!-- File Upload Card -->
+        <div class="card">
+            <h2 class="card-title">Upload Your Data</h2>
+            <div class="upload-form">
+                <p>Upload your Excel file to visualize and process thermal expansion data.</p>
+                <form action="{{ url_for('dashboard') }}" method="POST" enctype="multipart/form-data">
+                    <div class="file-input-wrapper">
+                        <label for="file" class="file-input-label">Select Excel File (.xlsx):</label>
+                        <input type="file" name="file" id="file" accept=".xlsx" required class="file-input">
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-upload"></i> Upload and Visualize
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Data Table Card -->
+        <div class="card">
+            <h2 class="card-title">Data Explorer</h2>
+            <iframe src="/dash/" width="100%" height="600px" id="dash-iframe" class="iframe-container"></iframe>
+        </div>
+
+        <!-- Graph Section -->
+        {% if graphs_html %}
+            {% for graph_html in graphs_html %}
+                <div class="card graph-container">
+                    {{ graph_html | safe }}
+                </div>
+            {% endfor %}
+            
+            <!-- Download Section -->
+            <div class="card">
+                <h2 class="card-title">Export Processed Data</h2>
+                <div class="download-section">
+                    <p>Download the processed data with your chosen smoothing settings.</p>
+                    <form action="{{ url_for('download_file') }}" method="get" class="download-form">
+                        <div class="form-group">
+                            <label for="window_size">Smoothing Window Size:</label>
+                            <input type="number" name="window_size" id="window_size" value="10" min="1" max="50" required class="form-control">
+                        </div>
+                        <button type="submit" class="btn download-btn">
+                            <i class="fas fa-download"></i> Download Smoothed File
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Despike - Advanced Thermal Expansion Data Analysis. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
